@@ -29,7 +29,7 @@ This is a web application that allows users to encrypt and decrypt messages usin
 ## Installation
 1. **Clone the Repository**:
    ```
-   git clone https://github.com/Gemechu-ge/Encryption-Decryption-Tool-.git
+   git clone https://github.com/Gemechu-ge/Encryption-Decryption-Tool.git
    
    ```
 
@@ -76,7 +76,6 @@ encryption-app/
 │   ├── script.js          # JavaScript for frontend logic
 ├── server.js              # Backend server with encryption/decryption logic
 ├── .gitignore             # Git ignore file
-├── .gitattributes         # Enforces LF line endings
 ├── README.md              # Project documentation
 ├── package.json           # Node.js dependencies and scripts
 ```
