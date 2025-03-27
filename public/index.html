@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encryption/Decryption Tool</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Encryption/Decryption Tool</h2>
+        <div class="algo-select">
+            <label for="algorithm">Choose Algorithm:</label>
+            <select id="algorithm" onchange="toggleMode()">
+                <option value="OTP">OTP</option>
+                <option value="3DES">3DES</option>
+                <option value="AES">AES</option>
+            </select>
+            <label for="mode">Mode:</label>
+            <select id="mode">
+                <option value="ECB">ECB</option>
+                <option value="CBC">CBC</option>
+                <option value="CFB">CFB</option>
+                <option value="CTR">CTR</option>
+            </select>
+        </div>
+        <div class="main-panel">
+            <div class="encrypt-panel">
+                <h3>Message to Encrypt</h3>
+                <textarea id="encryptText" placeholder="Enter text to encrypt">Hello great people</textarea>
+                <input type="file" id="encryptFile" accept=".txt">
+                <div class="key-field">
+                    <label for="encryptKey">Encryption Key:</label>
+                    <input type="text" id="encryptKey" value="mysecretkey12345">
+                </div>
+                <button onclick="encrypt()" class="encrypt-btn">🔒 Encrypt</button>
+                <button onclick="copyEncrypt()">Copy Encryption</button>
+                <textarea id="encryptResult" readonly></textarea>
+            </div>
+            <div class="decrypt-panel">
+                <h3>Message to Decrypt</h3>
+                <textarea id="decryptText" placeholder="Enter text to decrypt"></textarea>
+                <input type="file" id="decryptFile" accept=".txt">
+                <div class="key-field">
+                    <label for="decryptKey">Decryption Key:</label>
+                    <input type="text" id="decryptKey" value="mysecretkey12345">
+                </div>
+                <button onclick="decrypt()" class="decrypt-btn">🔓 Decrypt</button>
+                <button onclick="copyDecrypt()">Copy Decryption</button>
+                <textarea id="decryptResult" readonly></textarea>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
