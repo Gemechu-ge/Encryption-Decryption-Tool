@@ -10,10 +10,14 @@ async function encrypt() {
         alert('For OTP, the key must be at least as long as the text to encrypt.');
         return;
     }
+    if (algorithm === 'RSA' && plaintext.length > 214) {
+        alert('For RSA, the text to encrypt must be 214 bytes or less with OAEP padding.');
+        return;
+    }
 
     formData.append('algorithm', algorithm);
-    formData.append('key', key);
-    if (algorithm !== 'OTP') formData.append('mode', mode);
+    if (algorithm !== 'RSA') formData.append('key', key);
+    if (algorithm !== 'OTP' && algorithm !== 'RSA') formData.append('mode', mode);
     if (plaintext) formData.append('plaintext', plaintext);
     if (fileInput.files[0]) formData.append('file', fileInput.files[0]);
 
@@ -40,15 +44,14 @@ async function decrypt() {
     const fileInput = document.getElementById('decryptFile');
     const formData = new FormData();
 
-    // Only check key length against ciphertext length for OTP (server will handle base64 validation)
     if (algorithm === 'OTP' && ciphertext.length > key.length) {
         alert('For OTP, the key must be at least as long as the ciphertext.');
         return;
     }
 
     formData.append('algorithm', algorithm);
-    formData.append('key', key);
-    if (algorithm !== 'OTP') formData.append('mode', mode);
+    if (algorithm !== 'RSA') formData.append('key', key);
+    if (algorithm !== 'OTP' && algorithm !== 'RSA') formData.append('mode', mode);
     if (ciphertext) formData.append('ciphertext', ciphertext);
     if (fileInput.files[0]) formData.append('file', fileInput.files[0]);
 
@@ -84,5 +87,20 @@ function copyDecrypt() {
 function toggleMode() {
     const algorithm = document.getElementById('algorithm').value;
     const modeSelect = document.getElementById('mode');
-    modeSelect.disabled = algorithm === 'OTP';
+    const encryptKey = document.getElementById('encryptKey');
+    const decryptKey = document.getElementById('decryptKey');
+    
+    if (algorithm === 'OTP' || algorithm === 'RSA') {
+        modeSelect.disabled = true;
+    } else {
+        modeSelect.disabled = false;
+    }
+    
+    if (algorithm === 'RSA') {
+        encryptKey.disabled = true;
+        decryptKey.disabled = true;
+    } else {
+        encryptKey.disabled = false;
+        decryptKey.disabled = false;
+    }
 }
