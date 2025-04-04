@@ -19,6 +19,10 @@ const upload = multer({ storage: storage });
 
 app.use('/uploads', express.static('uploads'));
 
+// Load RSA keys
+const privateKey = fs.readFileSync(path.join(__dirname, 'private_key.pem'), 'utf8');
+const publicKey = fs.readFileSync(path.join(__dirname, 'public_key.pem'), 'utf8');
+
 app.post('/encrypt', upload.single('file'), async (req, res) => {
     const { algorithm, key, mode } = req.body;
     let plaintext = req.body.plaintext || '';
@@ -42,6 +46,9 @@ app.post('/encrypt', upload.single('file'), async (req, res) => {
                 break;
             case 'AES':
                 encrypted = encryptAES(plaintext, key, mode || 'CBC');
+                break;
+            case 'RSA':
+                encrypted = encryptRSA(plaintext);
                 break;
             default:
                 throw new Error('Unsupported algorithm');
@@ -73,6 +80,9 @@ app.post('/decrypt', upload.single('file'), async (req, res) => {
                 break;
             case 'AES':
                 decrypted = decryptAES(ciphertext, key, mode || 'CBC');
+                break;
+            case 'RSA':
+                decrypted = decryptRSA(ciphertext);
                 break;
             default:
                 throw new Error('Unsupported algorithm');
@@ -184,6 +194,39 @@ function decrypt3DES(ciphertext, key, mode) {
         return decrypted;
     } catch (error) {
         throw new Error(`3DES Decryption Error: ${error.message}`);
+    }
+}
+
+// RSA Encryption/Decryption
+function encryptRSA(plaintext) {
+    try {
+        const buffer = Buffer.from(plaintext, 'utf8');
+        // Max plaintext size for 2048-bit RSA with OAEP padding is 214 bytes (2048 bits / 8 - 42 bytes for padding)
+        if (buffer.length > 214) {
+            throw new Error('RSA plaintext exceeds maximum length of 214 bytes with OAEP padding');
+        }
+        const encrypted = crypto.publicEncrypt({
+            key: publicKey,
+            padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+            oaepHash: 'sha256' // Specify the hash algorithm for OAEP
+        }, buffer);
+        return encrypted.toString('base64');
+    } catch (error) {
+        throw new Error(`RSA Encryption Error: ${error.message}`);
+    }
+}
+
+function decryptRSA(ciphertext) {
+    try {
+        const buffer = Buffer.from(ciphertext, 'base64');
+        const decrypted = crypto.privateDecrypt({
+            key: privateKey,
+            padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+            oaepHash: 'sha256' // Specify the hash algorithm for OAEP
+        }, buffer);
+        return decrypted.toString('utf8');
+    } catch (error) {
+        throw new Error(`RSA Decryption Error: ${error.message}`);
     }
 }
 

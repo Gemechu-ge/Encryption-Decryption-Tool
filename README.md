@@ -11,6 +11,8 @@ This is a web application that allows users to encrypt and decrypt messages usin
   - Selectable modes for 3DES and AES: Electronic Codebook (ECB), Cipher Block Chaining (CBC), Cipher Feedback (CFB), and Counter (CTR).
 - **File Upload Support**:
   - Upload `.txt` files to encrypt or decrypt their contents.
+- **RSA Implementation**:
+  - Uses 2048-bit RSA with OAEP padding (SHA-256 hash) for secure public-key encryption.
 - **User Interface**:
   - Side-by-side sections for encryption and decryption.
   - Input fields for messages and keys.
@@ -25,6 +27,7 @@ This is a web application that allows users to encrypt and decrypt messages usin
 - **Node.js**: Version 14 or higher.
 - **npm**: Node package manager (comes with Node.js).
 - **Git**: For cloning the repository and managing version control.
+- OpenSSL installed
 
 ## Installation
 1. **Clone the Repository**:
@@ -38,6 +41,17 @@ This is a web application that allows users to encrypt and decrypt messages usin
    npm install
    ```
    This installs the required packages (`express` and `multer`) listed in `package.json`.
+
+4. **RSA Keys**:
+   ```
+   Generate a 2048-bit RSA key pair (not included in the repo for security):
+   ```
+   openssl genrsa -out private_key.pem 2048
+   ```
+   openssl rsa -in private_key.pem -pubout -out public_key.pem
+   ```
+   Place private_key.pem and public_key.pem in the project root.
+
 
 3. **Start the Server**:
    ```
@@ -65,6 +79,10 @@ This is a web application that allows users to encrypt and decrypt messages usin
    - Use the "Copy Encryption" button to copy the encrypted text to your clipboard.
    - Use the "Copy Decryption" button to copy the decrypted text to your clipboard.
 
+##Usage Notes
+RSA Limitation: Only 214 bytes of plaintext can be encrypted at once. For larger data, consider a hybrid approach (e.g., encrypt with AES, then encrypt the AES key with RSA).
+Security: Do not commit private_key.pem or public_key.pem to version control. They are ignored by .gitignore.
+
 ## Project Structure
 ```
 encryption-app/
@@ -78,6 +96,8 @@ encryption-app/
 ├── .gitignore             # Git ignore file
 ├── README.md              # Project documentation
 ├── package.json           # Node.js dependencies and scripts
+|-- private_key.pem        # Private key generated using OpenSSL
+|-- public_key.pem         # Public key generated using OpenSSL
 ```
 
 ## Dependencies

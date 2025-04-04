@@ -93,13 +93,20 @@ textarea[readonly] {
     color: #34495e;
 }
 
-.key-field input {
+.key-field textarea {
     width: 100%;
+    height: 150px; /* Increased height for PEM keys */
     padding: 8px;
     border: 1px solid #bdc3c7;
     border-radius: 5px;
     background: #fff;
     color: #2c3e50;
+}
+
+.key-field input[type="file"] {
+    margin-top: 10px;
+    width: 100%;
+    padding: 5px 0;
 }
 
 button {
